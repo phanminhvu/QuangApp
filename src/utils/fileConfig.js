@@ -2,6 +2,7 @@ const multer = require("multer");
 const fs = require("fs/promises");
 
 const storage = multer.diskStorage({
+
     destination: function (req, file, cb) {
         const uploadPath = `uploads/${req.user.name}/`; // Store files in a directory named after user's name
         fs.mkdir(uploadPath, { recursive: true }) // Create directory if it doesn't exist
@@ -13,7 +14,7 @@ const storage = multer.diskStorage({
             });
     },
     filename: function (req, file, cb) {
-        cb(null, `${req.user.app_id.toString()}.xls`); // Keep the original filename
+        cb(null, `config.xls`); // Keep the original filename
     }
 });
 

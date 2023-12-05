@@ -20,16 +20,6 @@ const userSchema = mongoose.Schema({
                 }
             }
         },
-        app_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'AppDetail',
-            nullable: true
-        },
-        register_apps_id: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'AppDetail',
-            nullable: true
-        }],
         password: {
             type: String,
             required: true,
@@ -44,15 +34,6 @@ const userSchema = mongoose.Schema({
         },
         address: {
             type: String,
-        },
-        active: {
-            type: Boolean,
-            required: true,
-
-        },
-        app_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'AppDetail'
         },
         tokens:
             {

@@ -35,7 +35,6 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 function ConvertToCSV(objArray) {
-    console.log(objArray)
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = 'MA_THUNG, MA_KIEN\r\n';
     for (var i = 0; i < array.length; i++) {
@@ -53,11 +52,9 @@ const stringObj =(data)=>{
     const keyData = Object.keys(data[0]);
     data.forEach(element => {
         keyData.forEach(e=>{
-            console.log(typeof element[e]);
             element[e] = `'`+element[e].toString();
         })
     });
-    console.log(data)
     return data;
 }
 
@@ -86,4 +83,6 @@ router.post('/send-email', function(req, res, next) {
         }
     });
 });
+
+
 module.exports = router;

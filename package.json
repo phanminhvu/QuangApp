@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f ./.env nodemon src/app.js"
+    "start": "env-cmd -f ./.env nodemon src/app.js",
+    "build": "node ./node_modules/babel-cli/bin/babel.js src -s -D -d dist --presets es2015,stage-0 --presets es2017,stage-0"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +26,8 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
     "env-cmd": "^10.1.0",
     "nodemon": "^3.0.1"
   }
