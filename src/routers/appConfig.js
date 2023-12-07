@@ -8,7 +8,7 @@ const User = require("../models/User");
 const router = express.Router();
 
 
-router.post('/upload',auth,  upload.single('file'), async (req, res) => {
+router.post('/upload',  upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
@@ -20,9 +20,8 @@ router.post('/upload',auth,  upload.single('file'), async (req, res) => {
         const sheetName = workbook.SheetNames[0]; // Get the first sheet name
         const worksheet = workbook.Sheets[sheetName]; // Get the first worksheet
         const data = xlsx.utils.sheet_to_json(worksheet); // Convert worksheet to JSON data
-        console.log('data', data)
 
-        const updateData = await AppConfig.findOneAndUpdate({user_id: req.user._id, }, {data: data}, {new: true})
+
 
         // Return the data as response
         res.status(200).send({

@@ -62,7 +62,6 @@ router.post('/send-email', function(req, res, next) {
     console.log(req.body)
 
     const data = req.body;
-    console.log(data);
     var mailOptions = {
         from: 'scantomailsystem@gmail.com',
         to: 'thuongmaidientuaal@gmail.com', //thuongmaidientuaal@gmail.com

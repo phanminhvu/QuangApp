@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const PhanQuyen = require("../models/PhanQuyen");
+const bcrypt = require("bcryptjs");
 
 const auth = require("../middleware/auth");
 const router = express.Router();
@@ -12,9 +13,23 @@ router.post("/signup", async (req, res) => {
         data.role = "User";
         const user = new User(data);
         await user.save();
-        console.log(user)
         const phanquyen = new PhanQuyen({user_id : user._id});
         await phanquyen.save();
+        res.status(201).send({ user });
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+
+router.post("/change-password", auth, async (req, res) => {
+    // Create a new user
+    const  id  = req.user._id;
+    const password = req.body.password;
+    const salt = bcrypt.genSaltSync(10);
+    const passwordSave = bcrypt.hashSync(password, salt);
+    try {
+        const user = await User.findByIdAndUpdate(id, {password : passwordSave}, { new: true });
         res.status(201).send({ user });
     } catch (error) {
         res.status(400).send(error);

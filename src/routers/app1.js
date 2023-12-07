@@ -5,7 +5,7 @@ var nodemailer = require('nodemailer');
 var csv = require('to-csv')
 
 const auth = require("../middleware/auth");
-const app1Auth = require("../middleware/auth");
+const app1Auth = require("../middleware/app1Auth");
 const User = require("../models/User");
 const router = express.Router();
 var transporter = nodemailer.createTransport({
@@ -46,7 +46,6 @@ const stringObj = (data) => {
 
 
 router.post('/send-email', [auth, app1Auth], function (req, res, next) {
-    console.log(req.body)
     const email = req.user.email;
     const title = req.body.title;
     const data = req.body.data
@@ -71,6 +70,29 @@ router.post('/send-email', [auth, app1Auth], function (req, res, next) {
         }
     });
 });
+
+router.get('/download', [auth, app1Auth], function (req, res, next) {
+    try {
+        var options = {
+            root: __dirname,
+        };
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename="config.xls"');
+
+        let fileName = "config.xls";
+        res.sendFile(fileName, options, function (err) {
+            if (err) {
+                console.log(err);
+                res.status(500).send('Error downloading file');
+            }
+        });
+    } catch (e) {
+        console.log(e);
+
+        res.status(500).send('Error downloading file');
+    }
+});
+
 
 
 router.get("/get-config", [auth, app1Auth], async (req, res) => {
@@ -102,6 +124,7 @@ router.post("/post-config", [auth, app1Auth], async (req, res) => {
         try {
             const id = req.user._id;
             const data = req.body;
+
             const appConfig = await App1Config.find({user_id: id});
             if (appConfig.length > 0) {
                 const appConfigId = appConfig[0]._id;
