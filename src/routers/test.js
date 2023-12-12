@@ -1,4 +1,4 @@
-const AppConfig = require("../models/AppConfig");
+const Test = require("../models/Test");
 const express = require('express');
 const xlsx = require('xlsx');
 const path = require('path');
@@ -20,8 +20,6 @@ router.post('/upload',  upload.single('file'), async (req, res) => {
         const sheetName = workbook.SheetNames[0]; // Get the first sheet name
         const worksheet = workbook.Sheets[sheetName]; // Get the first worksheet
         const data = xlsx.utils.sheet_to_json(worksheet); // Convert worksheet to JSON data
-
-
 
         // Return the data as response
         res.status(200).send({

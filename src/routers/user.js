@@ -17,7 +17,10 @@ router.post("/signup", async (req, res) => {
         await phanquyen.save();
         res.status(201).send({ user });
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({
+            success: false,
+            message: 'Email is already in use!',
+         });
     }
 });
 
@@ -136,7 +139,10 @@ router.post('/login', async(req, res) => {
         }
     } catch (error) {
         console.log(error)
-        res.status(400).send(error)
+        res.status(400).send({
+            success: false,
+            message: 'Login failed! Check email or password',
+        })
     }});
 
 router.post("/me/logout", auth, async (req, res) => {
