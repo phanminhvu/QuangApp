@@ -29,8 +29,6 @@ const phaQuyenSchema = mongoose.Schema({
             createdAt: 'created_at',
             updatedAt: 'updated_at',
         }
-
-
     }
 );
 const PhanQuyen = mongoose.model("PhanQuyen", phaQuyenSchema);

@@ -1,5 +1,8 @@
 const PhanQuyen = require("../models/PhanQuyen");
 const App1Config = require("../models/App1Config");
+const NhapHang = require('../models/NhapHang');
+const XuatHang = require('../models/XuatHang');
+const KiemTra =   require('../models/KiemTra');
 var express = require('express');
 var nodemailer = require('nodemailer');
 var csv = require('to-csv')
@@ -18,9 +21,10 @@ var transporter = nodemailer.createTransport({
 
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
-
-    var str = array[0].Object.keys().toString() + '\r\n';
+    console.log(typeof array)
+    console.log('array[0]',array[0])
+    var str =Object.keys( array[0]).toString() + '\r\n';
+    console.log('str',str)
     // var str = 'MA_THUNG, MA_KIEN\r\n';
     for (var i = 0; i < array.length; i++) {
         var line = '';
@@ -38,34 +42,55 @@ const stringObj = (data) => {
     const keyData = Object.keys(data[0]);
     data.forEach(element => {
         keyData.forEach(e => {
-            element[e] = `'` + element[e].toString();
+            element[e] = `'` + element[e] + `'`;
         })
     });
     return data;
 }
 
-
-router.post('/send-email', [auth, app1Auth], function (req, res, next) {
+router.post('/send-email', [auth, app1Auth],async function  (req, res, next) {
     const email = req.user.email;
     const title = req.body.title;
-    const data = req.body.data
+    const data = req.body.data;
+    const userId = req.user._id;
 
+    const saveData = async (userId,data,title)=>{
+        const options = { ordered: true };
+        data.forEach( e => e.userId =userId)
+        try {
+            if(title === 'Nhập hàng'){
+            await NhapHang.insertMany(data,options);
+            }
+            else if(title === 'Xuất hàng'){
+                await XuatHang.insertMany(data,options);
+            }
+            else if(title ==="Kiểm tra") {
+                await KiemTra.insertMany(data,options);
+            }
+            res.status(200).send({message:"Lưu thành công !"})
+
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    }
+
+     saveData(userId,data,title);
+    
+    
     var mailOptions = {
         from: 'scantomailsystem@gmail.com',
         to: email, //thuongmaidientuaal@gmail.com
         subject: title + ' ' + Date.now(),
         text: title,
         attachments: [{
-            filename: 'DATA SCAN' + Date.now() + '.csv',
-            content: ConvertToCSV(data)
+            filename: 'DATA SCAN '+ title +'' + Date.now() + '.csv',
+            content:  ConvertToCSV(JSON.stringify(data))
         }],
     };
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-            console.log(error);
             res.send({error: error});
         } else {
-            console.log('Email sent: ' + info.response);
             res.send({'info': 'Đã gửi dữ liệu vào mail'});
         }
     });
@@ -93,8 +118,6 @@ router.get('/download', [auth, app1Auth], function (req, res, next) {
     }
 });
 
-
-
 router.get("/get-config", [auth, app1Auth], async (req, res) => {
         // Create a new user
         try {
@@ -117,7 +140,6 @@ router.get("/get-config", [auth, app1Auth], async (req, res) => {
         }
     }
 );
-
 
 router.post("/post-config", [auth, app1Auth], async (req, res) => {
         // Create a new user

@@ -1,8 +1,7 @@
-const mongoose = require('mongoose')
+require('dotenv').config()
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
 
-// mongoose.connect(process.env.MONGODB_URL, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true,
-// })
-
-mongoose.connect(process.env.MONGODB_URL);
+const uri = process.env.MONGODB_URL ;
+console.log("uri::",uri);
+mongoose.connect("mongodb://root:IbBob6V5555bNZkg8Dr@45.251.115.14:27017/ScanApp").then(() => console.log("Connect mongodb success")).catch((err) => console.log("Connect Error",err));
